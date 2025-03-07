@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+ <title>Zakat Calculator</title>
+</head>
+<style>
+    body{background: url(Zakat_bg.jpg);background-size: cover;background-position: center;position: relative;color: #ffffff;color: #ffffff;}
+    body:before{content: "";background: #000000c2;position: absolute;inset: 0;z-index: -1;backdrop-filter: blur(6px);}
+    .container{width: 800px;max-width: 100%;margin: 0 auto;padding: 50px 20px;}
+    label.form-label.fs-5 {background: #ffffff1c;display: block;backdrop-filter: blur(22px);padding: 4px 10px;border-radius: 4px;}
+    .modal{color: #000000;}
+    #result-wrap {font-size: 40px;font-weight: 700;}
+    #result-wrap #result{color: #00953e;}
+    img.jakat-image {width: 100%;margin-bottom: 20px;}
+    a.current-gold-price {color: #00a1ff;}
+
+    @media only screen and (max-width:480px){
+        #result-wrap {font-size: 30px;}
+        input.form-control {font-size: 14px !important;}
+    }
+</style>
+<body>
+    <div class="container">
+        <div id="google_translate_element"></div>
+    
+        <h1 class="text-center mb-5">যাকাত ক্যালকুলেটর</h1>
+    
+        <div class="mb-4">
+            <label for="cash" class="form-label  fs-5">ঘর এবং ব্যাংক অ্যাকাউন্টে নগদ টাকা:</label>
+            <input type="number" class="form-control" id="cash" name="cash" placeholder="0.00 টাকা" data-has-listeners="true">
+        </div>
+    
+        <div class="mb-4">
+            <label for="money-owed" class="form-label fs-5">আপনার পাওনা টাকা:</label>
+            <input type="number" class="form-control" id="money-owed" name="money_owed" placeholder="0.00 টাকা" data-has-listeners="true">
+        </div>
+    
+        <div class="updateMetalPrice mb-4">
+            <label class="form-label fs-5">আপনার কাছে থাকা সোনার মূল্য: <a href="https://www.alaminjewellers.com/zakat-calculator-bangladesh/" target="_blank" class="current-gold-price">বর্তমান সোনার মূল্য দেখুন</a></label>
+            
+            <div class="d-flex gap-2 gap-lg-3">
+                <div class="gold-24k mb-3 mb-lg-1 flex-grow-1">
+                    <label class="form-label">২৪ ক্যারেট সোনা (ঐচ্ছিক):</label>
+                    <input type="number" class="form-control" id="gold-24k" name="gold-24k" placeholder="ওজন (গ্রাম)" data-has-listeners="true">
+                    <input type="number" class="form-control mt-2" id="gold-24k-price-gram" name="gold-24k-price-gram" placeholder="প্রতি গ্রাম মূল্য" data-has-listeners="true">
+                </div>
+        
+                <div class="gold-22k mb-3 mb-lg-1 flex-grow-1">
+                    <label class="form-label">২২ ক্যারেট সোনা (ঐচ্ছিক):</label>
+                    <input type="number" class="form-control" id="gold-22k" name="gold-22k" placeholder="ওজন (গ্রাম)" data-has-listeners="true">
+                    <input type="number" class="form-control mt-2" id="gold-22k-price-gram" name="gold-22k-price-gram" placeholder="প্রতি গ্রাম মূল্য" data-has-listeners="true">
+                </div>
+        
+                <div class="gold-21k mb-3 mb-lg-1 flex-grow-1">
+                    <label class="form-label">২১ ক্যারেট সোনা (ঐচ্ছিক):</label>
+                    <input type="number" class="form-control" id="gold-21k" name="gold-21k" placeholder="ওজন (গ্রাম)" data-has-listeners="true">
+                    <input type="number" class="form-control mt-2" id="gold-21k-price-gram" name="gold-21k-price-gram" placeholder="প্রতি গ্রাম মূল্য" data-has-listeners="true">
+                </div>
+            </div>
+            <h4>মোট সোনার মূল্য টাকা: <span id="calculated-gold-price">0.00</span></h4>
+        </div>
+    
+        <div class="updateMetalPrice mb-3 mb-lg-1">
+            <label for="silver" class="form-label  fs-5">আপনার কাছে থাকা রূপার মূল্য:</label>
+            <input type="number" class="form-control" id="silver" name="silver" placeholder="রূপার মোট ওজন (গ্রাম)" data-has-listeners="true">
+            <input type="number" class="form-control mt-2" id="silver-price-gram" name="silver_price_gram" placeholder="প্রতি গ্রাম রূপার মূল্য" data-has-listeners="true">
+        </div>
+        <h4 class="mb-4">মোট রূপার মূল্য টাকা: <span id="calculated-silver-price">0.00</span></h4>
+    
+        <div class="mb-4">
+            <label for="investments" class="form-label  fs-5">আপনার বিনিয়োগ এবং শেয়ারের মূল্য:</label>
+            <input type="number" class="form-control" id="investments" name="investments" placeholder="0.00 টাকা" data-has-listeners="true">
+        </div>
+    
+        <div class="mb-4">
+            <label for="stock" class="form-label  fs-5">বিক্রয়ের জন্য স্টকে থাকা পণ্যের মূল্য:</label>
+            <input type="number" class="form-control" id="stock" name="stock" placeholder="0.00 টাকা" data-has-listeners="true">
+        </div>
+    
+        <div class="mb-4">
+            <label for="other" class="form-label">অন্যান্য সম্পদ:</label>
+            <input type="number" class="form-control" id="other" name="other" placeholder="0.00 টাকা" data-has-listeners="true">
+        </div>
+    
+        <button class="btn btn-primary btn-block" onclick="calculateZakat()" data-bs-toggle="modal" data-bs-target="#staticBackdrop">যাকাত হিসাব করুন</button>
+        
+     </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">ধন্যবাদ</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <img class="jakat-image" src="jakat_image.jpg" alt="">
+            <div id="result-wrap">যাকাতের পরিমাণ: <span id="result"></span></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ 
+
+ <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+	
+
+    <script>
+       
+        function calculateZakat() {
+            const cash = parseFloat(document.getElementById('cash').value) || 0;
+            const moneyOwed = parseFloat(document.getElementById('money-owed').value) || 0;
+
+            // Get total gold values for all karats
+            const gold24kAmount = parseFloat(document.getElementById('gold-24k').value) || 0;
+            const gold24kPricePerGram = parseFloat(document.getElementById('gold-24k-price-gram').value) || 0;
+            const gold22kAmount = parseFloat(document.getElementById('gold-22k').value) || 0;
+            const gold22kPricePerGram = parseFloat(document.getElementById('gold-22k-price-gram').value) || 0;
+            const gold21kAmount = parseFloat(document.getElementById('gold-21k').value) || 0;
+            const gold21kPricePerGram = parseFloat(document.getElementById('gold-21k-price-gram').value) || 0;
+
+            // Calculate gold values
+            const goldValue = (gold24kAmount * gold24kPricePerGram) +
+                            (gold22kAmount * gold22kPricePerGram) +
+                            (gold21kAmount * gold21kPricePerGram);
+
+            // Get silver value
+            const silverAmount = parseFloat(document.getElementById('silver').value) || 0;
+            const silverPricePerGram = parseFloat(document.getElementById('silver-price-gram').value) || 0;
+            const silverValue = silverAmount * silverPricePerGram;
+
+            // Update displayed values for gold and silver
+            document.getElementById('calculated-gold-price').innerText = goldValue.toFixed(2);
+            document.getElementById('calculated-silver-price').innerText = silverValue.toFixed(2);
+
+            // Calculate total wealth
+            const investments = parseFloat(document.getElementById('investments').value) || 0;
+            const stock = parseFloat(document.getElementById('stock').value) || 0;
+            const other = parseFloat(document.getElementById('other').value) || 0;
+
+            const totalWealth = cash + moneyOwed + goldValue + silverValue + investments + stock + other;
+
+            // Zakat is 2.5% of total wealth
+            const zakatRate = 0.025;
+            const zakat = totalWealth * zakatRate;
+
+            // Display result
+            const resultElement = document.getElementById('result');
+            resultElement.textContent = `${zakat.toFixed(2)}`;
+        }
+
+        document.querySelectorAll('.updateMetalPrice').forEach(element => {
+            element.addEventListener('keyup',function(){
+                calculateZakat()
+            })
+        });
+
+    </script>
+
+</body>
+</html>
